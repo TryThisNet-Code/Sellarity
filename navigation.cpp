@@ -1,14 +1,13 @@
 #include <iostream>
-#include <vector>
 #include <chrono>
 #include <thread>
-#include <string>
 #include "navigation.h"
 #include <conio.h>
 #include <sstream>
 #include <iomanip>
 #include "panel.h"
 #include "helper.h"
+#include "customerUI.h"
 
 using namespace std;
 
@@ -234,7 +233,7 @@ void UserInterface::loginCustomer(const vector<string>& options, const vector<ve
 	                    stay = false;
 	                }
 				}else{
-					helper.centerText("Continue as admin? (Y/N): ");
+					helper.centerText("Continue as Customer? (Y/N): ");
 	                char again;
 	                cin >> again;
 	                if (toupper(again) != 'Y') {
@@ -491,4 +490,54 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 	}
 }
 //display bargraph
-
+void UserInterface::diplayGraph(const vector<string>& options, vector<string>& prodName, vector<double>& ratings, vector<double>& sales){
+	const int ENTER = 13;
+	const int UP = 72;
+	const int DOWN = 80;
+	const int bLetterE = 69;
+	const int sLetterE = 101;
+	int selected = 0;
+	bool stay = true;
+	
+	while(stay){
+		panel.clearSkin();
+		
+		helper.centerText("[ GRAPHS OF THE PRODUCT ]\n\n");
+		
+		helper.centerText("SELECT WHAT YOU WANT TO UPDATE\n\n");
+		
+		for(int i = 0; i < options.size(); i++){
+			string line;
+			if(i == selected){
+				line = ">   " + options[i] + "   <";
+			}else{
+				line = " "+options[i];
+			}
+			helper.centerText(line + "\n");
+		}
+		
+		int key = _getch();
+		
+		if(key == 224){
+			key = _getch();
+			if(key == UP) selected = (selected-1 + options.size()) % options.size();
+			if(key == DOWN) selected = (selected + 1) % options.size();
+		}else if(key == ENTER){
+			if(options[selected] == "Product Ratings"){
+				helper.drawRatingGraph(prodName, ratings);
+				
+				cout<<'\n';
+				helper.centerText("Press any key to EXIT");
+				key = _getch();
+			}else if(options[selected] == "Product Sales"){
+				helper.drawSalesGraph(prodName, sales);
+				
+				cout<<'\n';
+				helper.centerText("Press any key to EXIT");
+				key = _getch();
+			}else if(options[selected]== "Back"){
+				stay = false;
+			}
+		}
+	}
+}
