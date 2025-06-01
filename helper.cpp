@@ -1,10 +1,7 @@
-#include <iostream>
 #include <vector>
 #include "panel.h"
-#include <string>
 #include "navigation.h"
 #include "helper.h"
-#include <windows.h>
 #include <sstream>
 #include <iomanip>
 #include <stdexcept>
@@ -136,6 +133,7 @@ bool Helper::deleteProduct(const int& prodID, vector<string>& prodName, vector<d
 		
 		centerText(oName + " has been removed to the product list\n");
 		
+		//process of deleting a product
 		prodName.erase(prodName.begin() + (prodID));
 		prices.erase(prices.begin() + (prodID));
 		ratings.erase(ratings.begin() + (prodID));
@@ -146,5 +144,87 @@ bool Helper::deleteProduct(const int& prodID, vector<string>& prodName, vector<d
 		centerText("Invalid input. Please enter a valid text.\n");
 		system("pause");
 	}
+}
+//draw ratings graph
+void Helper::drawRatingGraph(const vector<string>& prodName, const vector<double>& ratings){
+	double maxRating = *max_element(ratings.begin(), ratings.end());
+    int maxBarLength = 25;
+	
+	//find the longest lines
+    size_t nameWidth = 0;
+    for (const auto& name : prodName) nameWidth = max(nameWidth, name.length());
+
+    // build all lines
+    vector<string> lines;
+    for (size_t i = 0; i < prodName.size(); i++) {
+        int bars = static_cast<int>((ratings[i] / maxRating) * maxBarLength);
+        ostringstream line;
+        line << left << setw(static_cast<int>(nameWidth)) << prodName[i] << " | "
+             << string(bars, '*') << " "
+             << fixed << setprecision(1) << ratings[i];
+        lines.push_back(line.str());
+    }
+
+    // add the scale thingy
+    string dashes = string(maxBarLength, '-');
+    string scale = "0     5     10    15    20    25";
+    string prefix = string(nameWidth + 3, ' ');
+    lines.push_back(prefix + dashes);
+    lines.push_back(prefix + scale);
+
+    // find the long one for good centering
+    size_t maxLineLength = 0;
+    for (const auto& l : lines)maxLineLength = max(maxLineLength, l.length());
+
+    sPanel.clearSkin();
+    centerText("== Product Ratings Bar Graph ==");
+    cout << "\n\n";
+	
+	//printing
+    for (const auto& l : lines) {
+        int padding = max(0, (getConsoleWidth() - static_cast<int>(maxLineLength)) / 2);
+        cout << string(padding, ' ') << l << '\n';
+    }
+}
+//draw sales graph
+void Helper::drawSalesGraph(const vector<string>& prodName, const vector<double>& sales){
+	double maxSales = *max_element(sales.begin(), sales.end());
+    int maxBarLength = 25;
+	
+	//find the longest lines
+    size_t nameWidth = 0;
+    for(const auto& name : prodName) nameWidth = max(nameWidth, name.length());
+
+    // build all lines
+    vector<string> lines;
+    for (size_t i = 0; i < prodName.size(); i++) {
+        int bars = static_cast<int>((sales[i] / maxSales) * maxBarLength);
+        ostringstream line;
+        line << left << setw(static_cast<int>(nameWidth)) << prodName[i] << " | "
+             << string(bars, '*') << " "
+             << fixed << setprecision(1) << sales[i];
+        lines.push_back(line.str());
+    }
+
+    // add the scale thingy
+    string dashes = string(maxBarLength, '-');
+    string scale = "0     5     10    15    20    25";
+    string prefix = string(nameWidth + 3, ' ');
+    lines.push_back(prefix + dashes);
+    lines.push_back(prefix + scale);
+
+    // find the long one for good centering
+    size_t maxLineLength = 0;
+    for (const auto& l : lines) maxLineLength = max(maxLineLength, l.length());
+
+    sPanel.clearSkin();
+    centerText("== Product Ratings Bar Graph ==");
+    cout<<"\n\n";
+	
+	//printing
+    for (const auto& l : lines) {
+        int padding = max(0, (getConsoleWidth() - static_cast<int>(maxLineLength)) / 2);
+        cout << string(padding, ' ') << l << '\n';
+    }
 }
 
