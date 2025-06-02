@@ -50,6 +50,7 @@ void Panels::adminPanel(){
 
 void Panels::customerPanel(){
 	CustomerUserInterface cui;
+	vector<string> checkOutOptions = {"Enter payment","Submit", "Back"};
 	vector<int> cart;
 	bool stay = true;
 	
@@ -99,9 +100,9 @@ void Panels::customerPanel(){
 		if(response == 101){
 			stay = false;
 		}else if(response == 32){
-			
+			cui.checkOutUI(cart, checkOutOptions, prodName, prices, sales);
 		}else{
-			
+			cart.push_back(response);
 		}
 	}
 }

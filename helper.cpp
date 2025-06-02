@@ -145,9 +145,9 @@ bool Helper::deleteProduct(const int& prodID, vector<string>& prodName, vector<d
 		system("pause");
 	}
 }
-//draw ratings graph
-void Helper::drawRatingGraph(const vector<string>& prodName, const vector<double>& ratings){
-	double maxRating = *max_element(ratings.begin(), ratings.end());
+//draw graph
+void Helper::drawGraph(const vector<string>& prodName, const vector<double>& item){
+	double maxItem = *max_element(item.begin(), item.end());
     int maxBarLength = 25;
 	
 	//find the longest lines
@@ -157,17 +157,17 @@ void Helper::drawRatingGraph(const vector<string>& prodName, const vector<double
     // build all lines
     vector<string> lines;
     for (size_t i = 0; i < prodName.size(); i++) {
-        int bars = static_cast<int>((ratings[i] / maxRating) * maxBarLength);
+        int bars = static_cast<int>((item[i] / maxItem) * maxBarLength);
         ostringstream line;
         line << left << setw(static_cast<int>(nameWidth)) << prodName[i] << " | "
              << string(bars, '*') << " "
-             << fixed << setprecision(1) << ratings[i];
+             << fixed << setprecision(1) << item[i];
         lines.push_back(line.str());
     }
 
     // add the scale thingy
     string dashes = string(maxBarLength, '-');
-    string scale = "0     5     10    15    20    25";
+    string scale = "0   5   10  15  20  25";
     string prefix = string(nameWidth + 3, ' ');
     lines.push_back(prefix + dashes);
     lines.push_back(prefix + scale);
@@ -186,44 +186,15 @@ void Helper::drawRatingGraph(const vector<string>& prodName, const vector<double
         cout << string(padding, ' ') << l << '\n';
     }
 }
-//draw sales graph
-void Helper::drawSalesGraph(const vector<string>& prodName, const vector<double>& sales){
-	double maxSales = *max_element(sales.begin(), sales.end());
-    int maxBarLength = 25;
-	
-	//find the longest lines
-    size_t nameWidth = 0;
-    for(const auto& name : prodName) nameWidth = max(nameWidth, name.length());
-
-    // build all lines
-    vector<string> lines;
-    for (size_t i = 0; i < prodName.size(); i++) {
-        int bars = static_cast<int>((sales[i] / maxSales) * maxBarLength);
-        ostringstream line;
-        line << left << setw(static_cast<int>(nameWidth)) << prodName[i] << " | "
-             << string(bars, '*') << " "
-             << fixed << setprecision(1) << sales[i];
-        lines.push_back(line.str());
-    }
-
-    // add the scale thingy
-    string dashes = string(maxBarLength, '-');
-    string scale = "0     5     10    15    20    25";
-    string prefix = string(nameWidth + 3, ' ');
-    lines.push_back(prefix + dashes);
-    lines.push_back(prefix + scale);
-
-    // find the long one for good centering
+//draw lines for good centering
+void Helper::drawLines(const vector<string>&lines){
+	int width = getConsoleWidth();
     size_t maxLineLength = 0;
-    for (const auto& l : lines) maxLineLength = max(maxLineLength, l.length());
-
-    sPanel.clearSkin();
-    centerText("== Product Ratings Bar Graph ==");
-    cout<<"\n\n";
-	
-	//printing
+    
+    for (const auto& l : lines)maxLineLength = max(maxLineLength, l.length());
+    
     for (const auto& l : lines) {
-        int padding = max(0, (getConsoleWidth() - static_cast<int>(maxLineLength)) / 2);
+        int padding = max(0, (width - static_cast<int>(maxLineLength)) / 2);
         cout << string(padding, ' ') << l << '\n';
     }
 }
