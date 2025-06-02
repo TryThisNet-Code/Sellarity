@@ -524,13 +524,13 @@ void UserInterface::diplayGraph(const vector<string>& options, vector<string>& p
 			if(key == DOWN) selected = (selected + 1) % options.size();
 		}else if(key == ENTER){
 			if(options[selected] == "Product Ratings"){
-				helper.drawRatingGraph(prodName, ratings);
+				helper.drawGraph(prodName, ratings);
 				
 				cout<<'\n';
 				helper.centerText("Press any key to EXIT");
 				key = _getch();
 			}else if(options[selected] == "Product Sales"){
-				helper.drawSalesGraph(prodName, sales);
+				helper.drawGraph(prodName, sales);
 				
 				cout<<'\n';
 				helper.centerText("Press any key to EXIT");
