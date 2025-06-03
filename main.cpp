@@ -17,12 +17,13 @@ int main(){
 	Helper helper;
 	UserInterface ui;
 	
-	vector<string> mainMenu = {" Log in as Admin", " Log in as Customer", " Exit"};
+	vector<string> mainMenu = {" Log in as Admin", " Log in as Customer","", " Exit"};
 	vector<string> loginMenu = {"Enter Username", "Enter Password","", "Log In", "Back"};
 	int choice;
 	
 	while(true){
 		//for mainMenu
+		
 		int choice = ui.landingScreen(mainMenu);
 		
 		switch(choice){

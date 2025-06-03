@@ -25,6 +25,10 @@ int UserInterface::landingScreen(const vector<string>& options){
 	while(true){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("SELLARITY\n");
 		helper.centerText("Sales Management System\n\n");
 		
@@ -35,19 +39,38 @@ int UserInterface::landingScreen(const vector<string>& options){
 			}else{
 				line = " "+options[i];
 			}
+			
+			if(line.empty()) {
+		        helper.centerText("\n");
+		        continue;
+    		}
+			
 			helper.centerText(line + "\n");
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 		
 		if(key == 224){
 			key = _getch();
-			if(key==UP){
-				selected = (selected-1 + options.size()) % options.size();
-			}else if(key==DOWN){
-				selected = (selected + 1) % options.size();
+			if (key == UP){
+	        	do {
+            		selected = (selected - 1 + options.size()) % options.size();
+        		} while (options[selected].empty());
 			}
+	        if (key == DOWN){
+	        	do {
+		            selected = (selected + 1) % options.size();
+		        } while (options[selected].empty());
+			} 
 		}else if(key == ENTER){
+			if (options[selected].empty()) {
+		        continue;
+		    }
+		    
 			return selected + 1;
 		}
 	}
@@ -63,6 +86,10 @@ void UserInterface::loginAdmin(const vector<string>& options, const vector<vecto
 	
 	while(stay){
 		panel.clearSkin();
+		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
 		
 		helper.centerText("== LOGIN AS ADMIN ==\n\n");
 		
@@ -86,6 +113,10 @@ void UserInterface::loginAdmin(const vector<string>& options, const vector<vecto
 			}
 			
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 			
@@ -161,6 +192,10 @@ void UserInterface::loginCustomer(const vector<string>& options, const vector<ve
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("== LOGIN AS CUSTOMER ==\n\n");
 		
 		for(int i = 0; i < options.size(); i++){
@@ -183,6 +218,10 @@ void UserInterface::loginCustomer(const vector<string>& options, const vector<ve
 				helper.centerText(" " + label + "\n");
 			}
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 		
@@ -256,6 +295,10 @@ int UserInterface::adminPanelUI(const vector<string>& options){
 	while(true){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("== ADMIN PANEL ==\n\n");
 		
 		for(int i = 0; i < options.size(); i++){
@@ -267,6 +310,10 @@ int UserInterface::adminPanelUI(const vector<string>& options){
 			}
 			helper.centerText(line + "\n");
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 		
@@ -295,6 +342,10 @@ void UserInterface::addPanel(const vector<string>& options,vector<string>& prodN
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("[ YOU ARE ADDING A PRODUCT ]\n\n");
 		
 		for(int i = 0; i < options.size(); i++){
@@ -305,6 +356,11 @@ void UserInterface::addPanel(const vector<string>& options,vector<string>& prodN
 				label += " " + nProdName + ": " + nPrice;
 			}
 			
+			if(label.empty()) {
+		        helper.centerText("\n");
+		        continue;
+    		}
+			
 			if(i == selected){
 				helper.centerText(">" + label + "<\n");
 			}else{
@@ -312,13 +368,29 @@ void UserInterface::addPanel(const vector<string>& options,vector<string>& prodN
 			}
 		}
 		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
+		
 		int key = _getch();
 		
 		if(key == 0 || key == 224){
 			key = getch();
-			if (key == UP) selected = (selected - 1 + options.size()) % options.size();
-	        if (key == DOWN) selected = (selected + 1) % options.size();
+			if (key == UP){
+	        	do {
+            		selected = (selected - 1 + options.size()) % options.size();
+        		} while (options[selected].empty());
+			}
+	        if (key == DOWN){
+	        	do {
+		            selected = (selected + 1) % options.size();
+		        } while (options[selected].empty());
+			} 
 		}else if(key == ENTER){
+			if (options[selected].empty()) {
+		        continue;
+		    }
+			
 			if(options[selected] == "Enter a new product"){
 				panel.clearSkin();
 				helper.centerText("Enter a new product name: ");
@@ -352,6 +424,10 @@ void UserInterface::updatePanel(const vector<string>& options,vector<string>& pr
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("[ YOU ARE UPDATING A PRODUCT ]\n\n");
 		
 		helper.centerText("SELECT WHAT YOU WANT TO UPDATE\n\n");
@@ -363,19 +439,38 @@ void UserInterface::updatePanel(const vector<string>& options,vector<string>& pr
 			}else{
 				line = " "+options[i];
 			}
+			
+			if(line.empty()) {
+		        helper.centerText("\n");
+		        continue;
+    		}
+			
 			helper.centerText(line + "\n");
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 		
 		if(key == 224){
 			key = _getch();
-			if(key == UP){
-				selected = (selected-1 + options.size()) % options.size();
-			}else if(key == DOWN){
-				selected = (selected + 1) % options.size();
+			if (key == UP){
+	        	do {
+            		selected = (selected - 1 + options.size()) % options.size();
+        		} while (options[selected].empty());
 			}
+	        if (key == DOWN){
+	        	do {
+		            selected = (selected + 1) % options.size();
+		        } while (options[selected].empty());
+			} 
 		}else if(key == ENTER){
+			if (options[selected].empty()) {
+		        continue;
+		    }
+			
 			if(options[selected] == "Product name"){
 				itemSelected = helper.selectProduct(prodName, price, ratings, sales);
 				updateChoice = 1;
@@ -412,12 +507,20 @@ void UserInterface::deletePanel(vector<string>& prodName, vector<double>& price,
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("[ YOU ARE DELETING A PRODUCT ]\n\n");
 		
 		helper.centerText("SELECT WHAT YOU WANT TO DELETE\n\n");
 		
 		itemSelected = helper.selectProduct(prodName, price, ratings, sales);
 		stay = helper.deleteProduct(itemSelected, prodName, price, ratings, sales);
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		helper.centerText("Continue Deleting?(Y/N): ");
 		cin>>resume;
@@ -434,6 +537,7 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 	const int DOWN = 80;
 	int selected = 0;
 	bool stay = true;
+	double totalSales = 0;
 	
 	while(stay){
 		panel.clearSkin();
@@ -462,6 +566,8 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 				<<setw(18)<<setprecision(2)<< sales[i];
 			
 			helper.centerText(" " + row.str() + "\n");
+			
+			totalSales += sales[i];
 		}
 		
 		for(int i = 0; i < options.size(); i++){
@@ -482,7 +588,10 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 	        if (key == DOWN) selected = (selected + 1) % prodName.size();
 	    }else if (key == ENTER){
 	    	if(options[selected] == "Print"){
+	    		helper.printProdInfo(prodName, price, ratings, sales, totalSales);
 	    		
+	    		helper.centerText("Product Information successfully printed to 'productInfoFile.txt'\n");
+	    		system("pause");
 			}else if(options[selected] == "Back"){
 				stay = false;
 			}
@@ -502,6 +611,10 @@ void UserInterface::diplayGraph(const vector<string>& options, vector<string>& p
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		helper.centerText("[ GRAPHS OF THE PRODUCT ]\n\n");
 		
 		helper.centerText("SELECT WHAT YOU WANT TO UPDATE\n\n");
@@ -513,16 +626,38 @@ void UserInterface::diplayGraph(const vector<string>& options, vector<string>& p
 			}else{
 				line = " "+options[i];
 			}
+			
+			if(line.empty()) {
+		        helper.centerText("\n");
+		        continue;
+    		}
+			
 			helper.centerText(line + "\n");
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 		
 		if(key == 224){
 			key = _getch();
-			if(key == UP) selected = (selected-1 + options.size()) % options.size();
-			if(key == DOWN) selected = (selected + 1) % options.size();
+			if (key == UP){
+	        	do {
+            		selected = (selected - 1 + options.size()) % options.size();
+        		} while (options[selected].empty());
+			}
+	        if (key == DOWN){
+	        	do {
+		            selected = (selected + 1) % options.size();
+		        } while (options[selected].empty());
+			}
 		}else if(key == ENTER){
+			if (options[selected].empty()) {
+		        continue;
+		    }
+			
 			if(options[selected] == "Product Ratings"){
 				helper.drawGraph(prodName, ratings);
 				
