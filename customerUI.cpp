@@ -13,19 +13,24 @@ using namespace std;
 Panels cPanel;
 Helper cHelper;
 
-int CustomerUserInterface::orderingUI(const vector<string>& prodName, const vector<double>& prices, const vector<double>& ratings, const vector<double>& sales){
+int CustomerUserInterface::orderingUI(int& oItem,const vector<string>& prodName, const vector<double>& prices, const vector<double>& ratings, const vector<double>& sales){
 	const int ENTER = 13;
 	const int UP = 72;
 	const int DOWN = 80;
 	const int SPACE = 32;
 	const int E = 101;
 	int selected = 0;
+	int item = oItem;
 	bool stay = true;
 	
 	while(stay){
 		cPanel.clearSkin();
 		
-		cHelper.centerText("SELECT WHICH PRODUCT YOU WANT TO UPDATE\n\n");
+		cHelper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
+		cHelper.centerText("SELECT WHICH PRODUCT YOU WANT TO ORDER\n\n");
 		
 		ostringstream header;
 		header<<left
@@ -54,46 +59,58 @@ int CustomerUserInterface::orderingUI(const vector<string>& prodName, const vect
 		        cHelper.centerText(" " + row.str() + "\n");
 		    }
 		}
-		ostringstream guideA, guideB;
+		ostringstream guideA, guideB, guideC;
 		
 		cout<<'\n';
 		
-		guideA <<left
-			   <<setw(10)<<"PRESS SPACE TO CHECKOUT";
+		guideA<<left<<setw(10)<<"PRESS SPACE TO CHECKOUT";
+		guideB<<left<<setw(10)<<"PRESS E TO EXIT";
+		guideC<<left<<setw(10)<<"CART "<<item;
 		
-		guideB <<left
-			   <<setw(10)<<"PRESS E TO EXIT";
-		
+		cHelper.centerText(guideC.str()+"\n");
 		cHelper.centerText(guideA.str()+"\n");
 		cHelper.centerText(guideB.str()+"\n");
 		
+		cout<<'\n';
+		cout<<'\n';
+		cHelper.drawBorder();
+		
 		int key = _getch();
-
+		
 	    if(key == 0 || key == 224){
 	        key = _getch();
 	        if (key == UP) selected = (selected - 1 + prodName.size()) % prodName.size();
 	        if (key == DOWN) selected = (selected + 1) % prodName.size();
 	    }else if (key == ENTER){
+	    	oItem++;
 	    	return selected;
 	    }else if(key == SPACE){
-	    	return 32;
 	    	stay = false;
+	    	return 32;
 		}else if(key == E){
-			return 101;
 			stay = false;
+			return 101;
 		}
 	}
 }
-void CustomerUserInterface::checkOutUI(const vector<int>& orders,const vector<string>& options, const vector<string>& prodName, const vector<double>& prices, vector<double>& sales){
+
+void CustomerUserInterface::checkOutUI(vector<int>& orders,const vector<string>& options, const vector<string>& prodName, const vector<double>& prices, vector<double>& ratings, vector<double>& sales){
+	vector<int> ratingCount(prodName.size(), 0);
 	const int ENTER = 13;
 	const int UP = 72;
 	const int DOWN = 80;
 	int selected = 0;
 	double payment = 0;
 	bool stay = true;
+	double change = 0;
 	
 	while(stay){
 		cPanel.clearSkin();
+		
+		cHelper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
 		double totalCost = 0;
 		vector<string> lines;
 		//building of lines array
@@ -139,6 +156,10 @@ void CustomerUserInterface::checkOutUI(const vector<int>& orders,const vector<st
 			}
 		}
 		
+		cout<<'\n';
+		cout<<'\n';
+		cHelper.drawBorder();
+		
 		int key = _getch();
 		
 		if(key == 0 || key == 224){
@@ -156,9 +177,25 @@ void CustomerUserInterface::checkOutUI(const vector<int>& orders,const vector<st
 			        system("pause");
 			    } else {
 			        cHelper.centerText("Purchased Successfully\n");
+			        
+			        change = payment - totalCost;
+			        //distributing of the purchase in the total sales
 			        for (int orderID:orders) {
 			            sales[orderID] += prices[orderID];
 			        }
+			        system("pause");
+			        rateItems(orders, prodName, prices, ratings, ratingCount);
+			        
+			        cout<<'\n';
+			        bool success = cHelper.printReceipt(orders, prodName, prices, totalCost, change);
+				
+					if(success){
+						cHelper.centerText("Receipt printed to 'receipt.txt'\n");
+						stay = false;
+						orders.clear();
+					}else{
+						cHelper.centerText("Failed to print receipt\n");
+					}
 			        system("pause");
 			    }
 			}else if(options[selected] == "Back"){
@@ -166,4 +203,40 @@ void CustomerUserInterface::checkOutUI(const vector<int>& orders,const vector<st
 			}
 		}
 	}
+}
+
+void CustomerUserInterface::rateItems(const vector<int>& orders, const vector<string>& prodName, const vector<double>& prices, vector<double>& ratings, vector<int>& ratingCount){
+	cPanel.clearSkin();
+	
+	cHelper.drawBorder();
+	cout<<'\n';
+	cout<<'\n';
+	
+	cHelper.centerText("Rate the product you purchased(1-5)\n\n");
+	
+	set<int> products = {orders.begin(), orders.end()};
+	
+	for(int product:products){
+		double rating;
+		
+		do{
+			ostringstream line;
+			line<<"Rate product "<<prodName[product]<<": ";
+			cHelper.centerText(line.str());
+			cin>>rating;
+			
+			if(rating < 1 || rating > 5){
+				cHelper.centerText("Invalid rating pls enter 1-5 only");
+			}
+		}while(rating < 1 || rating > 5);
+		
+		ratings[product] = (ratings[product] * ratingCount[product] + rating) / (ratingCount[product] + 1);
+    	ratingCount[product]++;
+	}
+	cout<<'\n';
+	cHelper.centerText("Thank you for your feedback!\n");
+	
+	cout<<'\n';
+	cout<<'\n';
+	cHelper.drawBorder();
 }

@@ -2,8 +2,6 @@
 #include "panel.h"
 #include "navigation.h"
 #include "helper.h"
-#include <sstream>
-#include <iomanip>
 #include <stdexcept>
 #include <conio.h>
 
@@ -25,6 +23,18 @@ void Helper::centerText(const string& text){
 	int width = getConsoleWidth();
     int padding = max(0, static_cast<int>(width - text.length()) / 2);
     cout << string(padding, ' ') << text;
+}
+//function to draw Border
+void Helper::drawBorder(){
+	int width = getConsoleWidth();
+	
+	string CYAN = "\033[96m";
+	string RESET = "\033[0m";
+	
+	if (width > 0)
+        cout<<CYAN<<string(width, '*')<<RESET<<"\n";
+    else
+        cout<<CYAN<<"****************************"<<RESET<<"\n";
 }
 //add product func
 void Helper::addProduct(const string& name, const string& price,vector<string>& prodName, vector<double>& prices, vector<double>& ratings, vector<double>& sales){
@@ -56,8 +66,11 @@ int Helper::selectProduct(const vector<string>& prodName, const vector<double>& 
 	
 	while(stay){
 		sPanel.clearSkin();
+		drawBorder();
+		cout<<'\n';
+		cout<<'\n';
 		
-		centerText("SELECT WHICH PRODUCT YOU WANT TO UPDATE\n\n");
+		centerText("SELECT WHICH PRODUCT YOU WANT TO EDIT\n\n");
 		
 		ostringstream header;
 		header<<left
@@ -86,6 +99,10 @@ int Helper::selectProduct(const vector<string>& prodName, const vector<double>& 
 		        centerText(" " + row.str() + "\n");
 		    }
 		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		drawBorder();
 		
 		int key = _getch();
 
@@ -177,6 +194,11 @@ void Helper::drawGraph(const vector<string>& prodName, const vector<double>& ite
     for (const auto& l : lines)maxLineLength = max(maxLineLength, l.length());
 
     sPanel.clearSkin();
+    
+    drawBorder();
+	cout<<'\n';
+	cout<<'\n';
+	
     centerText("== Product Ratings Bar Graph ==");
     cout << "\n\n";
 	
@@ -185,6 +207,10 @@ void Helper::drawGraph(const vector<string>& prodName, const vector<double>& ite
         int padding = max(0, (getConsoleWidth() - static_cast<int>(maxLineLength)) / 2);
         cout << string(padding, ' ') << l << '\n';
     }
+    
+    cout<<'\n';
+	cout<<'\n';
+	drawBorder();
 }
 //draw lines for good centering
 void Helper::drawLines(const vector<string>&lines){
@@ -198,4 +224,58 @@ void Helper::drawLines(const vector<string>&lines){
         cout << string(padding, ' ') << l << '\n';
     }
 }
+//print receipt
+bool Helper::printReceipt(const vector<int>& orderID, const vector<string>& prodName, const vector<double>& prices, const double totalCost, const double change){
+	ofstream receiptFile("receipt.txt");
+	
+	if(!receiptFile){
+		cerr<<"Error creating receipt file!"<<endl;
+		return false;
+	}
+	
+	receiptFile<<"========== RECEIPT ==========\n\n";
+	for(int id: orderID){
+		receiptFile<<"Product name: "<<prodName[id]<<"\n";
+		receiptFile<<"Price       : "<<fixed<<setprecision(2)<<prices[id]<<"\n";
+		receiptFile<<"-----------------------------\n";
+	}
+	
+	receiptFile<<"TOTAL : "<<fixed<<setprecision(2)<<totalCost<<"\n";
+	receiptFile<<"CHANGE: "<<fixed<<setprecision(2)<<change<<"\n";
+    receiptFile<<"=============================\n";
+    receiptFile<<"Thank you for your purchase!\n";
 
+    receiptFile.close();
+    return true;
+}
+//print Sales info
+void Helper::printProdInfo(const vector<string>& prodName,const vector<double>& prices,const vector<double>& ratings,const vector<double>& sales, const double& totalSales){
+	ofstream prodInfoFile("productInfoFile.txt");
+	
+	if(!prodInfoFile){
+		cerr<<"Error creating product information file!"<<endl;
+		return;
+	}
+	
+	prodInfoFile<<"\t\t\t======== PRODUCT INVENTORY ========\n\n";
+	prodInfoFile<<left
+				<<setw(6)<<"ID: "
+				<<setw(18)<<"Product Name"
+				<<setw(18)<<"Product Price"
+				<<setw(18)<<"Product Ratigs"
+				<<setw(18)<<"Product Sales\n";
+	prodInfoFile<<"-----------------------------------------------------------------\n";
+	
+	for(int i = 0; i < prodName.size(); i++){
+		prodInfoFile<<fixed<<left
+					<<setw(6)<<to_string(i+1)
+					<<setw(18)<<prodName[i]
+					<<setw(18)<<setprecision(2)<< prices[i]
+					<<setw(18)<<setprecision(2)<< ratings[i]
+					<<setw(18)<<setprecision(2)<< sales[i]<<"\n";
+	}
+	prodInfoFile<<"==========================================================================\n";
+	prodInfoFile<<"TOTAL SALES: "<<fixed<<setprecision(2)<<totalSales<<"\n";
+    prodInfoFile<<"==========================================================================\n";
+	
+}
