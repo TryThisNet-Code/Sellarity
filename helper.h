@@ -15,6 +15,7 @@ class Helper{
 		int getConsoleWidth();
 		void centerText(const string& text);
 		void drawBorder();
+		void inputFail();
 		//functions for adding some thingy/ admin side
 		void addProduct(const string& name, const string& price,vector<string>& prodName, vector<double>& prices, vector<double>& ratings, vector<double>& sales);
 		int selectProduct(const vector<string>& prodName, const vector<double>& prices, const vector<double>& ratings, const vector<double>& sales);

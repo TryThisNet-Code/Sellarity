@@ -13,6 +13,7 @@ class UserInterface {
 		void loginAdmin(const vector<string>& options, const vector<vector<string>>& adminAcc);
 		void loginCustomer(const vector<string>& options, const vector<vector<string>>& customerAcc);
 		int adminPanelUI(const vector<string>& options);
+		void registerCustomer(const vector<string>& options, vector<vector<string>>& customerInfo, vector<vector<string>>& customerAcc);
 		//admin panel
 		void addPanel(const vector<string>& options, vector<string>& prodName, vector<double>& price, vector<double>& rating, vector<double>& sale);
 		void updatePanel(const vector<string>& options, vector<string>& prodName, vector<double>& price, const vector<double>& ratings, const vector<double>& sales);

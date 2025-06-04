@@ -21,8 +21,8 @@ void Panels::adminPanel(){
 	vector <string> fOptions = {"Product name", "Product Price","", "Back"};
 	vector<string> displayOptions = {"Print", "Back"};
 	vector<string> graphOptions = {"Product Ratings", "Product Sales","", "Back"};
+	
 	while(true){
-		
 		int choice = ui.adminPanelUI(options);
 		
 		switch(choice){

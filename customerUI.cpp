@@ -108,25 +108,33 @@ void CustomerUserInterface::checkOutUI(vector<int>& orders,const vector<string>&
 		cPanel.clearSkin();
 		
 		cHelper.drawBorder();
-		cout<<'\n';
-		cout<<'\n';
+		cout<<'\n'<<'\n';
 		
 		double totalCost = 0;
 		vector<string> lines;
+		
+		vector<int> orderCount(prodName.size(), 0);
+        for (int id : orders) {
+            orderCount[id]++;
+        }
+		
 		//building of lines array
 	    lines.push_back("");
 	    lines.push_back("Your order:");
 	    lines.push_back("");
 	    
-	    for(int orderID:orders){
-	    	ostringstream name, price;
-	    	name<<left<<setw(15)<<"Product name: "<<prodName[orderID];
-	    	price<<left<<setw(15)<<"Price: "<<fixed<<setprecision(2)<<prices[orderID];
-	    	
-	    	totalCost += prices[orderID];
-	    	lines.push_back(name.str());
-	    	lines.push_back(price.str());
-	    	lines.push_back("");
+	    for(int i = 0; i < orderCount.size(); i++){
+	    	if (orderCount[i] > 0) {
+                double productTotal = prices[i] * orderCount[i];
+
+                ostringstream line;
+                line << "Product "<<(i + 1)<< ": x"<<orderCount[i]
+				     <<" - "<<left<<setw(15)<<prodName[i]
+				     <<"   ? "<< fixed <<setprecision(2)<<productTotal;
+
+                totalCost += productTotal;
+                lines.push_back(line.str());
+            }
 		}
 		
 		ostringstream total;
@@ -156,8 +164,7 @@ void CustomerUserInterface::checkOutUI(vector<int>& orders,const vector<string>&
 			}
 		}
 		
-		cout<<'\n';
-		cout<<'\n';
+		cout<<'\n'<<'\n';
 		cHelper.drawBorder();
 		
 		int key = _getch();
