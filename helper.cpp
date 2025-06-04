@@ -36,6 +36,14 @@ void Helper::drawBorder(){
     else
         cout<<CYAN<<"****************************"<<RESET<<"\n";
 }
+//function if the input fail
+void Helper::inputFail(){
+	if(cin.fail()){
+		cin.clear(); // Clear the fail state
+	    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+	    cout << "Invalid input. Please try again.\n";
+	}
+}
 //add product func
 void Helper::addProduct(const string& name, const string& price,vector<string>& prodName, vector<double>& prices, vector<double>& ratings, vector<double>& sales){
 	try{

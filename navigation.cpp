@@ -8,6 +8,7 @@
 #include "panel.h"
 #include "helper.h"
 #include "customerUI.h"
+#include "account_logic.h"
 
 using namespace std;
 
@@ -140,11 +141,11 @@ void UserInterface::loginAdmin(const vector<string>& options, const vector<vecto
 			if(options[selected] == "Enter Username"){
 				panel.clearSkin();
 				helper.centerText("Enter Username: ");
-				cin>>aUsername;
+				getline(cin,aUsername);
 			}else if(options[selected] == "Enter Password"){
 				panel.clearSkin();
 				helper.centerText("Enter Password: ");
-				cin>>aPass;
+				getline(cin,aPass);
 			}else if(options[selected] == "Log In"){
 				bool found = false;
 				
@@ -279,6 +280,100 @@ void UserInterface::loginCustomer(const vector<string>& options, const vector<ve
 	                    stay = false;
 	                }
 				}
+			}else if(options[selected] == "Back"){
+				stay = false;
+			}
+		}
+	}
+}
+//register customer
+void UserInterface::registerCustomer(const vector<string>& options,vector<vector<string>>& customerInfo, vector<vector<string>>& customerAcc){
+	const int ENTER = 13;
+	const int UP = 72;
+	const int DOWN = 80;
+	int selected = 0;
+	string username = "";
+	string userpass = "";
+	string userRname = "";
+	string userContact = "";
+	bool stay = true;
+	
+	while(stay){
+		panel.clearSkin();
+		
+		helper.drawBorder();
+		cout<<'\n';
+		cout<<'\n';
+		
+		helper.centerText("== REGISTRATION ==\n\n");
+		
+		for(int i = 0; i < options.size(); i++){
+			string label = options[i];
+			if(label == "Enter a username" && !username.empty()){
+				label += ": " + username;
+			}else if(label == "Enter Name" && !userRname.empty()){
+				label += ": " + userRname;
+			}else if(label == "Enter Contact" && !userContact.empty()){
+				label += ": " + userContact;
+			}else if(label == "Enter password" && !userpass.empty()){
+				label += ": " + string(userpass.length(), '*');
+			}
+			
+			if(label.empty()) {
+		        helper.centerText("\n");
+		        continue;
+    		}
+			
+			if(i == selected){
+				helper.centerText(">" + label + "<\n");
+			}else{
+				helper.centerText(" " + label + "\n");
+			}
+		}
+		
+		cout<<'\n';
+		cout<<'\n';
+		helper.drawBorder();
+		
+		int key = _getch();
+		
+		if(key == 0 || key == 224){
+			key = getch();
+			if (key == UP){
+	        	do {
+            		selected = (selected - 1 + options.size()) % options.size();
+        		} while (options[selected].empty());
+			}
+	        if (key == DOWN){
+	        	do {
+		            selected = (selected + 1) % options.size();
+		        } while (options[selected].empty());
+			} 
+		}else if(key == ENTER){
+			if (options[selected].empty()) {
+		        continue;
+		    }
+			
+			if(options[selected] == "Enter a username"){
+				panel.clearSkin();
+				helper.centerText("Enter a username: ");
+				getline(cin, username);//
+			}else if(options[selected] == "Enter Name"){
+				panel.clearSkin();
+				helper.centerText("Enter customer name: ");
+				getline(cin, userRname);//
+			}else if(options[selected] == "Enter Contact"){
+				panel.clearSkin();
+				helper.centerText("Enter you Contact No#: ");
+				getline(cin, userContact);
+			}else if(options[selected] == "Enter password"){
+				panel.clearSkin();
+				helper.centerText("Enter you password: ");
+				getline(cin, userpass);
+			}else if(options[selected] == "Submit"){
+				AccountLogic aLogic;
+				aLogic.createUser(username, userRname, userContact, userpass,customerInfo, customerAcc);
+				break;
 			}else if(options[selected] == "Back"){
 				stay = false;
 			}
@@ -542,6 +637,9 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 	while(stay){
 		panel.clearSkin();
 		
+		helper.drawBorder();
+		cout<<'\n'<<'\n';
+		
 		helper.centerText("PRODUCT INVENTORY\n\n");
 		
 		ostringstream header;
@@ -579,6 +677,9 @@ void UserInterface::displayPanel(const vector<string>& options,vector<string>& p
 			}
 			helper.centerText(line + "\n");
 		}
+		
+		cout<<'\n'<<'\n';
+		helper.drawBorder();
 		
 		int key = _getch();
 
