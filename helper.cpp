@@ -241,11 +241,21 @@ bool Helper::printReceipt(const vector<int>& orderID, const vector<string>& prod
 		return false;
 	}
 	
+	// Count quantity per product
+	vector<int> orderCount(prodName.size(), 0);
+	for (int id : orderID) {
+		orderCount[id]++;
+	}
+	
 	receiptFile<<"========== RECEIPT ==========\n\n";
-	for(int id: orderID){
-		receiptFile<<"Product name: "<<prodName[id]<<"\n";
-		receiptFile<<"Price       : "<<fixed<<setprecision(2)<<prices[id]<<"\n";
-		receiptFile<<"-----------------------------\n";
+	for (int i = 0; i < orderCount.size(); i++) {
+		if (orderCount[i] > 0) {
+			double productTotal = prices[i] * orderCount[i];
+			receiptFile << "Product    : " << prodName[i] << "\n";
+			receiptFile << "Quantity   : x" << orderCount[i] << "\n";
+			receiptFile << "Subtotal   : " << fixed << setprecision(2) << productTotal << "\n";
+			receiptFile << "-----------------------------\n";
+		}
 	}
 	
 	receiptFile<<"TOTAL : "<<fixed<<setprecision(2)<<totalCost<<"\n";
